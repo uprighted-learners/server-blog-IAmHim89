@@ -1,17 +1,13 @@
 const router = require("express").Router();
 
-/* const { ifError } = require("assert");
-const { isUtf8 } = require("buffer");
-const { json } = require("express"); */
 //file system import
 const fs = require("fs");
-//const { dirname } = require("path");
 
 // path for json
 const path = require("path");
 
 const myFullPath = path.join(__dirname, "../api/blog.json");
-//?get endpoint display comments
+//?get endpoint display all comments
 router.get("/project", (req, res) => {
   fs.readFile(myFullPath, "utf8", (err, data) => {
     if (err) {
@@ -39,7 +35,7 @@ router.get("/post_id/:id", (req, res) => {
       const postId = req.params.id;
       const allComments = JSON.parse(data);
       const singleComment = allComments.find(
-        (allComments) => allComments.post_id === postId
+        (allComments) => allComments.post_id == postId
       );
 
       if (allComments) {
