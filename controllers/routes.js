@@ -1,6 +1,8 @@
 const router = require("express").Router();
 
-const { json } = require("express");
+/* const { ifError } = require("assert");
+const { isUtf8 } = require("buffer");
+const { json } = require("express"); */
 //file system import
 const fs = require("fs");
 //const { dirname } = require("path");
@@ -26,30 +28,67 @@ router.get("/project", (req, res) => {
     }
   });
 });
-router.get("project/:post_id", (req, res) => {
+//?get endpoint display 1 comment
+//TODO Makesure to fix post_id single comment display
+router.get("/post_id/:id", (req, res) => {
   fs.readFile(myFullPath, "utf8", (err, data) => {
     if (err) {
       return res.status(500).send("Error reading comments file");
     }
     try {
-      const postId = req.params.post_id;
-      const allComments = json.parse(data);
+      const postId = req.params.id;
+      const allComments = JSON.parse(data);
       const singleComment = allComments.find(
         (allComments) => allComments.post_id === postId
       );
 
       if (allComments) {
-        res.status(200).json(singleComment);
+        res.status(200).json({ singleComment });
       } else {
         req.status(500).send("Error with your comments!!");
       }
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({
+        Error: error,
+      });
+      console.log(error);
     }
   });
 });
-router.post("/project", (req, res) => {});
-router.put("/project", (req, res) => {});
+//? post endpoint create new comment
+router.post("/create", (req, res) => {
+  fs.readFile(myFullPath, "utf8", (err, data) => {
+    if (err) {
+      return res.status(500).send("Something went wrong with your path");
+    }
+    let jsonData = [];
+    const create = req.body;
+    try {
+      jsonData = JSON.parse(data);
+      jsonData.push(create);
+
+      res.status(200).json({ jsonData });
+    } catch (err) {
+      res.status(500).json({
+        Error: err,
+      });
+    }
+  });
+});
+router.patch("/update/:id", (req, res) => {
+  fs.readFile(myFullPath, "utf8", async (err, data) => {
+    if (err) {
+      return res.status(500).send("Error with connecting Path");
+    }
+    try {
+      const update = req.body;
+      const id = req.params.id;
+      let jsonBlog = JSON.parse(data);
+    } catch (error) {
+      res.status(500).send("Server not Working!");
+    }
+  });
+});
 router.delete("/project", (req, res) => {});
 
 module.exports = router;
