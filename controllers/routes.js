@@ -20,7 +20,7 @@ router.get("/project", (req, res) => {
       const jsonData = JSON.parse(data);
       res.status(200).json(jsonData);
     } catch (error) {
-      res.status(500).send("Your Json didn't render!", error);
+      res.status(500).send("Your Json didn't render!");
     }
   });
 });
@@ -31,22 +31,22 @@ router.get("/post_id/:id", (req, res) => {
       return res.status(500).send("Error reading comments file");
     }
     try {
-      const postId = req.params.id;
+      //const postId = req.params.id;
       const allComments = JSON.parse(data);
-      const singleComment = allComments.find(
-        (allComments) => allComments.post_id == postId
+      const singleComment = allComments.findIndex(
+        (allComments) => allComments.post_id === req.params.id
       );
 
-      if (singleComment) {
+      console.log(allComments);
+      if (allComments) {
         res.status(200).json({ singleComment });
       } else {
-        req.status(500).send("Error with your comments!!");
+        res.status(500).send("Error with your comments!!");
       }
     } catch (error) {
       res.status(500).json({
         Error: error,
       });
-      console.log(error);
     }
   });
 });
